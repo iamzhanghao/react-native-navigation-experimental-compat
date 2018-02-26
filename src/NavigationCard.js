@@ -27,7 +27,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @flow
+ 
  */
 'use strict';
 
@@ -41,7 +41,7 @@ const NavigationPropTypes = require('./NavigationPropTypes');
 const React = require('react');
 const StyleSheet = require('react-native').StyleSheet;
 
-import type  {
+import type {
   NavigationPanPanHandlers,
   NavigationSceneRenderer,
   NavigationSceneRendererProps,
@@ -57,7 +57,6 @@ type Props = NavigationSceneRendererProps & {
 };
 
 import PropTypes from 'prop-types';
-
 
 /**
  * Component that renders the scene as card for the <NavigationCardStack />.
@@ -76,31 +75,25 @@ class NavigationCard extends React.Component<any, Props, any> {
   };
 
   render(): React.Element<any> {
-    const {
-      panHandlers,
-      pointerEvents,
-      renderScene,
-      style,
-      ...props /* NavigationSceneRendererProps */
-    } = this.props;
+    const { panHandlers, pointerEvents, renderScene, style, ...props /* NavigationSceneRendererProps */ } = this.props;
 
-    const viewStyle = style === undefined ?
-      NavigationCardStackStyleInterpolator.forHorizontal(props) :
-      style;
+    const viewStyle = style === undefined ? NavigationCardStackStyleInterpolator.forHorizontal(props) : style;
 
-    const viewPanHandlers = panHandlers === undefined ?
-      NavigationCardStackPanResponder.forHorizontal({
-        ...props,
-        onNavigateBack: this.props.onNavigateBack,
-      }) :
-      panHandlers;
+    const viewPanHandlers =
+      panHandlers === undefined
+        ? NavigationCardStackPanResponder.forHorizontal({
+          ...props,
+          onNavigateBack: this.props.onNavigateBack,
+        })
+        : panHandlers;
 
     return (
       <Animated.View
         {...viewPanHandlers}
         pointerEvents={pointerEvents}
         ref={this.props.onComponentRef}
-        style={[styles.main, viewStyle]}>
+        style={[styles.main, viewStyle]}
+      >
         {renderScene(props)}
       </Animated.View>
     );
@@ -115,7 +108,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 10,
     top: 0,

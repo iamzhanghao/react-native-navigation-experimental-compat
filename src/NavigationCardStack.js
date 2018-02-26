@@ -27,7 +27,6 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @flow
  */
 'use strict';
 
@@ -43,7 +42,7 @@ const View = require('react-native').View;
 
 import PropTypes from 'prop-types';
 
-const {Directions} = NavigationCardStackPanResponder;
+const { Directions } = NavigationCardStackPanResponder;
 
 import type {
   NavigationState,
@@ -53,9 +52,7 @@ import type {
   NavigationStyleInterpolator,
 } from './NavigationTypeDefinition';
 
-import type {
-  NavigationGestureDirection,
-} from './NavigationCardStackPanResponder';
+import type { NavigationGestureDirection } from './NavigationCardStackPanResponder';
 
 type Props = {
   direction: NavigationGestureDirection,
@@ -127,8 +124,8 @@ type DefaultProps = {
  * ```
  */
 class NavigationCardStack extends React.Component<DefaultProps, Props, void> {
-  _render : NavigationSceneRenderer;
-  _renderScene : NavigationSceneRenderer;
+  _render: NavigationSceneRenderer;
+  _renderScene: NavigationSceneRenderer;
 
   static propTypes = {
     /**
@@ -229,40 +226,33 @@ class NavigationCardStack extends React.Component<DefaultProps, Props, void> {
     const isVertical = this.props.direction === 'vertical';
     const animationConfig = {};
     if (
-      !!NativeAnimatedModule
-
+      !!NativeAnimatedModule &&
       // Gestures do not work with the current iteration of native animation
       // driving. When gestures are disabled, we can drive natively.
-      && !this.props.enableGestures
-
+      !this.props.enableGestures &&
       // Native animation support also depends on the transforms used:
-      && NavigationCardStackStyleInterpolator.canUseNativeDriver(isVertical)
+      NavigationCardStackStyleInterpolator.canUseNativeDriver(isVertical)
     ) {
       animationConfig.useNativeDriver = true;
     }
     return animationConfig;
-  }
+  };
 
   _render(props: NavigationTransitionProps): React.Element<any> {
-    const {
-      renderHeader,
-    } = this.props;
+    const { renderHeader } = this.props;
 
     const header = renderHeader ? <View>{renderHeader(props)}</View> : null;
 
-    const scenes = props.scenes.map(
-     scene => this._renderScene({
-       ...props,
-       scene,
-     })
+    const scenes = props.scenes.map(scene =>
+      this._renderScene({
+        ...props,
+        scene,
+      })
     );
 
     return (
       <View style={styles.container}>
-        <View
-          style={[styles.scenes, this.props.scenesStyle]}>
-          {scenes}
-        </View>
+        <View style={[styles.scenes, this.props.scenesStyle]}>{scenes}</View>
         {header}
       </View>
     );
@@ -271,9 +261,11 @@ class NavigationCardStack extends React.Component<DefaultProps, Props, void> {
   _renderScene(props: NavigationSceneRendererProps): React.Element<any> {
     const isVertical = this.props.direction === 'vertical';
 
-    const interpolator = this.props.cardStyleInterpolator || (isVertical ?
-      NavigationCardStackStyleInterpolator.forVertical :
-      NavigationCardStackStyleInterpolator.forHorizontal);
+    const interpolator =
+      this.props.cardStyleInterpolator ||
+      (isVertical
+        ? NavigationCardStackStyleInterpolator.forVertical
+        : NavigationCardStackStyleInterpolator.forHorizontal);
 
     const style = interpolator(props);
 
@@ -285,9 +277,9 @@ class NavigationCardStack extends React.Component<DefaultProps, Props, void> {
         onNavigateBack: this.props.onNavigateBack,
         gestureResponseDistance: this.props.gestureResponseDistance,
       };
-      panHandlers = isVertical ?
-        NavigationCardStackPanResponder.forVertical(panHandlersProps) :
-        NavigationCardStackPanResponder.forHorizontal(panHandlersProps);
+      panHandlers = isVertical
+        ? NavigationCardStackPanResponder.forVertical(panHandlersProps)
+        : NavigationCardStackPanResponder.forHorizontal(panHandlersProps);
     }
 
     return (

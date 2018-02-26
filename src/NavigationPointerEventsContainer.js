@@ -27,7 +27,6 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @flow
  */
 'use strict';
 
@@ -36,9 +35,7 @@ const NavigationAnimatedValueSubscription = require('./NavigationAnimatedValueSu
 
 const invariant = require('fbjs/lib/invariant');
 
-import type  {
-  NavigationSceneRendererProps,
-} from './NavigationTypeDefinition';
+import type { NavigationSceneRendererProps } from './NavigationTypeDefinition';
 
 type Props = NavigationSceneRendererProps;
 
@@ -49,15 +46,11 @@ const MIN_POSITION_OFFSET = 0.01;
  * `pointerEvents` property for a component whenever navigation position
  * changes.
  */
-function create(
-  Component: ReactClass<any>,
-): ReactClass<any> {
-
+function create(Component: ReactClass<any>): ReactClass<any> {
   class Container extends React.Component<any, Props, any> {
-
     _component: any;
     _onComponentRef: (view: any) => void;
-    _onPositionChange: (data: {value: number}) => void;
+    _onPositionChange: (data: { value: number }) => void;
     _pointerEvents: string;
     _positionListener: ?NavigationAnimatedValueSubscription;
 
@@ -85,33 +78,21 @@ function create(
       this._bindPosition(nextProps);
     }
 
-    render(): React.Element<any>  {
+    render(): React.Element<any> {
       this._pointerEvents = this._computePointerEvents();
-      return (
-        <Component
-          {...this.props}
-          pointerEvents={this._pointerEvents}
-          onComponentRef={this._onComponentRef}
-        />
-      );
+      return <Component {...this.props} pointerEvents={this._pointerEvents} onComponentRef={this._onComponentRef} />;
     }
 
     _onComponentRef(component: any): void {
       this._component = component;
       if (component) {
-        invariant(
-          typeof component.setNativeProps === 'function',
-          'component must implement method `setNativeProps`',
-        );
+        invariant(typeof component.setNativeProps === 'function', 'component must implement method `setNativeProps`');
       }
     }
 
     _bindPosition(props: NavigationSceneRendererProps): void {
       this._positionListener && this._positionListener.remove();
-      this._positionListener = new  NavigationAnimatedValueSubscription(
-        props.position,
-        this._onPositionChange,
-      );
+      this._positionListener = new NavigationAnimatedValueSubscription(props.position, this._onPositionChange);
     }
 
     _onPositionChange(): void {
@@ -119,23 +100,17 @@ function create(
         const pointerEvents = this._computePointerEvents();
         if (this._pointerEvents !== pointerEvents) {
           this._pointerEvents = pointerEvents;
-          this._component.setNativeProps({pointerEvents});
+          this._component.setNativeProps({ pointerEvents });
         }
       }
     }
 
     _computePointerEvents(): string {
-      const {
-        navigationState,
-        position,
-        scene,
-      } = this.props;
+      const { navigationState, position, scene } = this.props;
 
       if (scene.isStale || navigationState.index !== scene.index) {
         // The scene isn't focused.
-        return scene.index > navigationState.index ?
-          'box-only' :
-          'none';
+        return scene.index > navigationState.index ? 'box-only' : 'none';
       }
 
       const offset = position.__getAnimatedValue() - navigationState.index;
@@ -149,7 +124,7 @@ function create(
       return 'auto';
     }
   }
-  return  Container;
+  return Container;
 }
 
 module.exports = {

@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
 'use strict';
 
@@ -30,10 +29,7 @@ import type {
 } from './NavigationTypeDefinition';
 
 type Props = {
-  configureTransition: (
-    a: NavigationTransitionProps,
-    b: ?NavigationTransitionProps,
-  ) => NavigationTransitionSpec,
+  configureTransition: (a: NavigationTransitionProps, b: ?NavigationTransitionProps) => NavigationTransitionSpec,
   navigationState: NavigationState,
   onTransitionEnd: () => void,
   onTransitionStart: () => void,
@@ -49,7 +45,6 @@ type State = {
 };
 
 import PropTypes from 'prop-types';
-
 
 const DefaultTransitionSpec = {
   duration: 250,
@@ -129,10 +124,7 @@ class NavigationTransitioner extends React.Component<any, Props, State> {
       scenes: nextScenes,
     };
 
-    const {
-      position,
-      progress,
-    } = nextState;
+    const { position, progress } = nextState;
 
     progress.setValue(0);
 
@@ -140,67 +132,52 @@ class NavigationTransitioner extends React.Component<any, Props, State> {
     this._transitionProps = buildTransitionProps(nextProps, nextState);
 
     // get the transition spec.
-    const transitionUserSpec = nextProps.configureTransition ?
-      nextProps.configureTransition(
-        this._transitionProps,
-        this._prevTransitionProps,
-      ) :
-      null;
+    const transitionUserSpec = nextProps.configureTransition
+      ? nextProps.configureTransition(this._transitionProps, this._prevTransitionProps)
+      : null;
 
     const transitionSpec = {
       ...DefaultTransitionSpec,
       ...transitionUserSpec,
     };
 
-    const {timing} = transitionSpec;
+    const { timing } = transitionSpec;
     delete transitionSpec.timing;
 
     const animations = [
-      timing(
-        progress,
-        {
-          ...transitionSpec,
-          toValue: 1,
-        },
-      ),
+      timing(progress, {
+        ...transitionSpec,
+        toValue: 1,
+      }),
     ];
 
     if (nextProps.navigationState.index !== this.props.navigationState.index) {
       animations.push(
-        timing(
-          position,
-          {
-            ...transitionSpec,
-            toValue: nextProps.navigationState.index,
-          },
-        ),
+        timing(position, {
+          ...transitionSpec,
+          toValue: nextProps.navigationState.index,
+        })
       );
     }
 
     // update scenes and play the transition
     this.setState(nextState, () => {
-      nextProps.onTransitionStart && nextProps.onTransitionStart(
-        this._transitionProps,
-        this._prevTransitionProps,
-      );
+      nextProps.onTransitionStart && nextProps.onTransitionStart(this._transitionProps, this._prevTransitionProps);
       Animated.parallel(animations).start(this._onTransitionEnd);
     });
   }
 
   render(): React.Element<any> {
     return (
-      <View
-        onLayout={this._onLayout}
-        style={[styles.main, this.props.style]}>
+      <View onLayout={this._onLayout} style={[styles.main, this.props.style]}>
         {this.props.render(this._transitionProps, this._prevTransitionProps)}
       </View>
     );
   }
 
   _onLayout(event: any): void {
-    const {height, width} = event.nativeEvent.layout;
-    if (this.state.layout.initWidth === width &&
-      this.state.layout.initHeight === height) {
+    const { height, width } = event.nativeEvent.layout;
+    if (this.state.layout.initWidth === width && this.state.layout.initHeight === height) {
       return;
     }
     const layout = {
@@ -238,28 +215,15 @@ class NavigationTransitioner extends React.Component<any, Props, State> {
     this._transitionProps = buildTransitionProps(this.props, nextState);
 
     this.setState(nextState, () => {
-      this.props.onTransitionEnd && this.props.onTransitionEnd(
-        this._transitionProps,
-        prevTransitionProps,
-      );
+      this.props.onTransitionEnd && this.props.onTransitionEnd(this._transitionProps, prevTransitionProps);
     });
   }
 }
 
-function buildTransitionProps(
-  props: Props,
-  state: State,
-): NavigationTransitionProps {
-  const {
-    navigationState,
-  } = props;
+function buildTransitionProps(props: Props, state: State): NavigationTransitionProps {
+  const { navigationState } = props;
 
-  const {
-    layout,
-    position,
-    progress,
-    scenes,
-  } = state;
+  const { layout, position, progress, scenes } = state;
 
   const scene = scenes.find(isSceneActive);
 
@@ -271,7 +235,7 @@ function buildTransitionProps(
     position,
     progress,
     scenes,
-    scene
+    scene,
   };
 }
 

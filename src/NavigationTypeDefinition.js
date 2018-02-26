@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
  */
 'use strict';
 
@@ -24,7 +23,7 @@ export type NavigationGestureDirection = 'horizontal' | 'vertical';
 
 export type NavigationRoute = {
   key: string,
-  title?: string
+  title?: string,
 };
 
 export type NavigationState = {
@@ -108,13 +107,9 @@ export type NavigationTransitionSpec = {
 export type NavigationAnimationSetter = (
   position: NavigationAnimatedValue,
   newState: NavigationState,
-  lastState: NavigationState,
+  lastState: NavigationState
 ) => void;
 
-export type NavigationSceneRenderer = (
-  props: NavigationSceneRendererProps,
-) => ?React.Element<any>;
+export type NavigationSceneRenderer = (props: NavigationSceneRendererProps) => ?React.Element<any>;
 
-export type NavigationStyleInterpolator = (
-  props: NavigationSceneRendererProps,
-) => Object;
+export type NavigationStyleInterpolator = (props: NavigationSceneRendererProps) => Object;
